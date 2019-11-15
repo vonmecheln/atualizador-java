@@ -211,7 +211,9 @@ public class Progress extends javax.swing.JFrame {
                 downloader.download(prop.readPropertie(EPropertie.URL_BASE_GIT), v, prop.readPropertie(EPropertie.APLICATION_NAME));
                 unzip.unzip(prop.readPropertie(EPropertie.APLICATION_NAME), "atualizacao");
                 versaoAtual = v;
-
+                
+                // ENCERRAR A APLICAÇÃO
+                
                 progress.lbStatus.setText("Atualizando banco de dados...");
                 progress.lbVersao.setText(versaoAtual);
                 progress.lbVersaoNova.setText("");

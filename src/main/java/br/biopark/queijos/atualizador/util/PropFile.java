@@ -27,7 +27,7 @@ public class PropFile {
         try (OutputStream output = new FileOutputStream("config.properties")) {
 
             Properties prop = new Properties();
-
+            
             // set the properties value
             prop.setProperty(EPropertie.URL_BASE_GIT.getDescricao(), "");
             

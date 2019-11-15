@@ -29,8 +29,6 @@ public class FlywayDatabase {
          * Find which versions are not applied yet.
          */
         
-        flyway.getConfiguration().getLocations();
-        
         MigrationInfoService migrationInfoService = flyway.info();
         MigrationInfo[] migrationInfo = migrationInfoService.all();
 

@@ -11,6 +11,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 
 /**
@@ -32,8 +34,8 @@ public class Downloader {
         janela.repaint();
 
         try {
-
-            URL url = new URL(urlBase + versao + nomeApp);
+            String endereco = "https://github.com/renatofritola/Loteria/releases/download/v1.2.0/teste.zip";
+            URL url = new URL(endereco);
             HttpURLConnection httpConnection = (HttpURLConnection) (url.openConnection());
             long completeFileSize = httpConnection.getContentLength();
 
@@ -72,7 +74,9 @@ public class Downloader {
             bout.close();
             in.close();
         } catch (FileNotFoundException e) {
+            Logger.getLogger(Downloader.class.getName()).log(Level.SEVERE, null, e);
         } catch (IOException e) {
+            Logger.getLogger(Downloader.class.getName()).log(Level.SEVERE, null, e);
         }
 
     }
