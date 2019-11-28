@@ -23,7 +23,6 @@ import org.eclipse.jgit.lib.Ref;
  */
 public class GitUtil {
 
-    Progress janela = Progress.getInstance();
     Util util = new Util();
 
     public GitUtil() {
@@ -51,8 +50,6 @@ public class GitUtil {
 
         List<String> versoes = new ArrayList<>();
 
-        janela.getLbStatus().setText("Verificando versão atual...");
-        janela.repaint();
         util.sleep(5000);
 
         for (Map.Entry<String, Ref> entry : map.entrySet()) {

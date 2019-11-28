@@ -18,6 +18,7 @@ public enum EPropertie {
     DATABASE_PASSWORD       ("db.password"),
     DATABASE_USER           ("db.user"),
     DATABASE_SCRIPT_LOCATION("db.scriptSource"),
+    DATABASE_DATASCRIPT_LOCATION("db.dataScriptSource"),
     APLICATION_NAME         ("app.name"),
     APLICATION_VERSION      ("app.version"),
     UPDATE_CHECK_FREQUENCY  ("update.frequency"),

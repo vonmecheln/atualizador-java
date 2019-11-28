@@ -11,12 +11,18 @@ import br.biopark.queijos.atualizador.util.FlywayDatabase;
 import br.biopark.queijos.atualizador.util.PropFile;
 import br.biopark.queijos.atualizador.util.UnzipFiles;
 import br.biopark.queijos.atualizador.util.Util;
+import java.awt.TrayIcon;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.JRootPane;
 
 /**
  *
@@ -28,7 +34,9 @@ public class Progress extends javax.swing.JFrame {
     private static PropFile prop = new PropFile();
     private static FlywayDatabase flywayDb = new FlywayDatabase();
     private static Downloader downloader = new Downloader();
-
+    private static String versaoAtual = "";
+    private static List<String> versoes = new ArrayList();
+    private static TrayIcon trayIcon;
     private static Progress INSTANCE;
 
     private Progress() {
@@ -38,9 +46,6 @@ public class Progress extends javax.swing.JFrame {
     public static Progress getInstance() {
         return INSTANCE == null ? INSTANCE = new Progress() : INSTANCE;
     }
-
-    //private static String urlBase = "https://github.com/renatofritola/Loteria/releases/download/v";
-    private static Progress progress = getInstance();
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -69,20 +74,24 @@ public class Progress extends javax.swing.JFrame {
         setUndecorated(true);
         setResizable(false);
 
-        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel3.setBackground(new java.awt.Color(29, 38, 45));
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, " Versões ", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 12))); // NOI18N
+        jPanel1.setBackground(new java.awt.Color(29, 38, 45));
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, " Versões ", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 12), new java.awt.Color(255, 255, 255))); // NOI18N
 
         lbVersao1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        lbVersao1.setForeground(new java.awt.Color(255, 255, 255));
         lbVersao1.setText("Atual");
 
         lbVersao.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        lbVersao.setForeground(new java.awt.Color(255, 255, 255));
         lbVersao.setText("1.0.0");
 
         lbVersaoNova.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        lbVersaoNova.setForeground(new java.awt.Color(255, 255, 255));
 
         lbVersao2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        lbVersao2.setForeground(new java.awt.Color(255, 255, 255));
         lbVersao2.setText("Nova");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -94,35 +103,41 @@ public class Progress extends javax.swing.JFrame {
                 .addComponent(lbVersao1, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lbVersao, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(56, 56, 56)
+                .addGap(18, 18, 18)
                 .addComponent(lbVersao2, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(lbVersaoNova, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(76, Short.MAX_VALUE))
+                .addContainerGap(114, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lbVersao1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbVersao)
-                    .addComponent(lbVersaoNova)
-                    .addComponent(lbVersao2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lbVersaoNova, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(lbVersao1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(lbVersao)
+                        .addComponent(lbVersao2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
-        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, " Processamento ", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 12))); // NOI18N
+        jPanel2.setBackground(new java.awt.Color(29, 38, 45));
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, " Processamento ", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 12), new java.awt.Color(255, 255, 255))); // NOI18N
+        jPanel2.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
+        jPanel2.setDoubleBuffered(false);
+        jPanel2.setFont(new java.awt.Font("Tahoma", 1, 10)); // NOI18N
 
         lbStatus.setBackground(new java.awt.Color(255, 255, 255));
         lbStatus.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        lbStatus.setForeground(new java.awt.Color(255, 255, 255));
         lbStatus.setText("lbStatus");
 
         jpProgress.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        jpProgress.setForeground(new java.awt.Color(0, 0, 0));
         jpProgress.setToolTipText("");
-        jpProgress.setPreferredSize(new java.awt.Dimension(150, 11));
+        jpProgress.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        jpProgress.setPreferredSize(new java.awt.Dimension(150, 50));
+        jpProgress.setStringPainted(true);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -131,8 +146,8 @@ public class Progress extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jpProgress, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbStatus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(lbStatus, javax.swing.GroupLayout.DEFAULT_SIZE, 392, Short.MAX_VALUE)
+                    .addComponent(jpProgress, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -140,8 +155,8 @@ public class Progress extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addComponent(lbStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jpProgress, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(18, Short.MAX_VALUE))
+                .addComponent(jpProgress, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(13, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -171,7 +186,7 @@ public class Progress extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 192, Short.MAX_VALUE)
+            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -189,11 +204,14 @@ public class Progress extends javax.swing.JFrame {
     private javax.swing.JLabel lbVersaoNova;
     // End of variables declaration//GEN-END:variables
 
-    public static void processar(List<String> versoes, String versaoAtual) {
+    public static void processar(List<String> versoes, String versaoAtual, TrayIcon trayicon) {
+
+        Progress progress = getInstance();
 
         UnzipFiles unzip = new UnzipFiles();
 
         int vAtual = Integer.parseInt(versaoAtual.replace(".", ""));
+        boolean sucesso = false;
 
         for (String v : versoes) {
 
@@ -223,7 +241,6 @@ public class Progress extends javax.swing.JFrame {
 
                 if (vRem == 100) {
 
-                    //execCommand("java -jar " + prop.readPropertie(EPropertie.LOCAL_ORIGEM) + "/" + prop.readPropertie(EPropertie.APLICATION_NAME));
                     util.sleep(5000);
 
                     unzip.createDir(prop.readPropertie(EPropertie.LOCAL_DESTINO));
@@ -231,7 +248,6 @@ public class Progress extends javax.swing.JFrame {
                     unzip.copiar(prop.readPropertie(EPropertie.LOCAL_ORIGEM) + "/bancoqueijos.db",
                             prop.readPropertie(EPropertie.LOCAL_DESTINO) + "/bancoqueijos.db");
 
-                    //execCommand("taskkill /FI \"WindowTitle eq Queijos*\"");
                 }
 
                 progress.lbStatus.setText("Atualizando banco de dados...");
@@ -243,7 +259,8 @@ public class Progress extends javax.swing.JFrame {
                 flywayDb.updateDataBase(prop.readPropertie(EPropertie.DATABASE_URL),
                         prop.readPropertie(EPropertie.DATABASE_USER),
                         prop.readPropertie(EPropertie.DATABASE_PASSWORD),
-                        prop.readPropertie(EPropertie.DATABASE_SCRIPT_LOCATION));
+                        prop.readPropertie(EPropertie.DATABASE_SCRIPT_LOCATION),
+                        prop.readPropertie(EPropertie.DATABASE_DATASCRIPT_LOCATION));
                 util.sleep(2000);
 
                 progress.lbStatus.setText("Instalando nova versão...");
@@ -256,14 +273,13 @@ public class Progress extends javax.swing.JFrame {
                 util.sleep(2000);
 
                 prop.setProperty(EPropertie.APLICATION_VERSION, versaoAtual);
-                
-                
+
                 progress.lbStatus.setText("Removendo arquivos temporários...");
                 progress.lbVersao.setText(versaoAtual);
                 progress.lbVersaoNova.setText("");
                 progress.repaint();
                 util.sleep(2000);
-                
+
                 unzip.deleteDownloadedContent(prop.readPropertie(EPropertie.ARQUIVO_ZIP),
                         prop.readPropertie(EPropertie.LOCAL_ORIGEM));
 
@@ -274,16 +290,19 @@ public class Progress extends javax.swing.JFrame {
                 util.sleep(2000);
 
             }
-
+            sucesso = true;
         }
 
-        progress.lbStatus.setText("Processo de atualização finalizado!");
-        progress.lbVersao.setText(versaoAtual);
-        progress.lbVersaoNova.setText("");
-        progress.repaint();
-        util.sleep(2000);
+        if (sucesso) {
+            progress.lbStatus.setText("Processo de atualização finalizado!");
+            progress.lbVersao.setText(versaoAtual);
+            progress.lbVersaoNova.setText("");
+            progress.repaint();
+            util.sleep(2000);
 
-        progress.dispose();
+            progress.dispose();
+            abrirAplicacao();
+        }
 
     }
 
@@ -327,6 +346,57 @@ public class Progress extends javax.swing.JFrame {
         } catch (IOException ex) {
             Logger.getLogger(Progress.class.getName()).log(Level.SEVERE, null, ex);
         }
+
+    }
+
+    public static void abrirAplicacao() {
+
+        trayIcon.displayMessage("Atualizador Queijos", "Clique aqui para abrir o sistema", TrayIcon.MessageType.INFO);
+        trayIcon.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Runtime runTime = Runtime.getRuntime();
+                try {
+                    Process process = runTime.exec("java -jar "
+                            + prop.readPropertie(EPropertie.LOCAL_DESTINO)
+                            + "/" + prop.readPropertie(EPropertie.APLICATION_NAME));
+                } catch (IOException ex) {
+                    Logger.getLogger(Progress.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
+
+    }
+
+    public JPanel getjPanel1() {
+        return jPanel1;
+    }
+
+    public static void setVersaoAtual(String versaoAtual) {
+        Progress.versaoAtual = versaoAtual;
+    }
+
+    public static void setVersoes(List<String> versoes) {
+        Progress.versoes = versoes;
+    }
+
+    public void setTrayIcon(TrayIcon trayIcon) {
+        this.trayIcon = trayIcon;
+    }
+
+    public void iniciarAtualizacao(List<String> versoes, String versaoAtual, TrayIcon trayicon) {
+
+        Progress janela = Progress.getInstance();
+
+        janela.getJpProgress().setIndeterminate(true);
+        janela.getJpProgress().setUI(new Main.MyProgressUI());
+        janela.getLbVersao().setText(versaoAtual);
+
+        janela.getJpProgress().setVisible(true);
+        janela.getJpProgress().setStringPainted(true);
+
+        janela.repaint();
+
+        janela.processar(versoes, versaoAtual, trayIcon);
 
     }
 
