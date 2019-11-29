@@ -11,10 +11,13 @@ import br.biopark.queijos.atualizador.util.FlywayDatabase;
 import br.biopark.queijos.atualizador.util.PropFile;
 import br.biopark.queijos.atualizador.util.UnzipFiles;
 import br.biopark.queijos.atualizador.util.Util;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -40,6 +43,9 @@ public class Progress extends javax.swing.JFrame {
 
     private Progress() {
         initComponents();
+        URL url = this.getClass().getResource("/queijo.png");
+        Image iconeTitulo = Toolkit.getDefaultToolkit().getImage(url);
+        this.setIconImage(iconeTitulo);
     }
 
     public static Progress getInstance() {
@@ -388,7 +394,7 @@ public class Progress extends javax.swing.JFrame {
         janela.repaint();
 
         janela.processar(versoes, versaoAtual, trayicon);
-
+        TrayIconController.processandoVersao = false;
     }
 
 }

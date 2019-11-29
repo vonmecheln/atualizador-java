@@ -5,8 +5,11 @@
  */
 package br.biopark.queijos.atualizador;
 
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.TrayIcon;
 import java.awt.event.ActionListener;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JLabel;
@@ -27,6 +30,9 @@ public class Versao extends javax.swing.JDialog {
     public Versao(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        URL url = this.getClass().getResource("/queijo.png");
+        Image iconeTitulo = Toolkit.getDefaultToolkit().getImage(url);
+        this.setIconImage(iconeTitulo);
     }
 
     public Versao(java.awt.Frame parent, boolean modal, String versao, List<String> versoes, TrayIcon trayicon) {
@@ -160,16 +166,15 @@ public class Versao extends javax.swing.JDialog {
             @Override
             public void run() {
                 Progress progress = Progress.getInstance();
+                TrayIconController.processandoVersao = true;
                 progress.iniciarAtualizacao(versoes, versao, trayIcon);
             }
         }, "Atualização").start();
        
-//        this.setVisible(false);
-//        progress.iniciarAtualizacao(versoes, versao, trayIcon);
-
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        TrayIconController.processandoVersao = false;
         this.dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
 
