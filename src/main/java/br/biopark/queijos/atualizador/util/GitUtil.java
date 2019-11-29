@@ -8,7 +8,6 @@ package br.biopark.queijos.atualizador.util;
 import br.biopark.queijos.atualizador.Progress;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -24,29 +23,22 @@ import org.eclipse.jgit.lib.Ref;
  */
 public class GitUtil {
 
-    Progress janela = Progress.getInstance();
     Util util = new Util();
 
     public GitUtil() {
     }
 
-    public List<String> buscaVersoes() {
+    public List<String> buscaVersoes(String urlBase) {
         try {
-
-            janela.getLbStatus().setText("Procurando por novas versões...");
-            janela.repaint();
-            util.sleep(5000);
 
             final Map<String, Ref> map = Git.lsRemoteRepository()
                     .setHeads(false)
                     .setTags(true)
-                    .setRemote("https://github.com/renatofritola/Loteria.git")
+                    .setRemote(urlBase + ".git")
                     .callAsMap();
 
             return readVersions(map);
 
-//            Runtime rt = Runtime.getRuntime();
-//            Process pr = rt.exec("git ls-remote --tags https://github.com/renatofritola/Loteria.git v*");
         } catch (GitAPIException ex) {
             Logger.getLogger(GitUtil.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -58,8 +50,6 @@ public class GitUtil {
 
         List<String> versoes = new ArrayList<>();
 
-        janela.getLbStatus().setText("Verificando versão atual...");
-        janela.repaint();
         util.sleep(5000);
 
         for (Map.Entry<String, Ref> entry : map.entrySet()) {

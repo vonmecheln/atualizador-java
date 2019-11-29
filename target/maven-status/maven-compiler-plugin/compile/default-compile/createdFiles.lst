@@ -1,6 +1,7 @@
 br\biopark\queijos\atualizador\util\Util.class
 br\biopark\queijos\atualizador\Main.class
 br\biopark\queijos\atualizador\Progress.class
+br\biopark\queijos\atualizador\Main$MyProgressUI.class
 br\biopark\queijos\atualizador\util\UnzipFiles.class
 br\biopark\queijos\atualizador\util\Downloader.class
 br\biopark\queijos\atualizador\util\FlywayDatabase.class

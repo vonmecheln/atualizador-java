@@ -82,17 +82,33 @@ public class UnzipFiles {
         file.delete();
     }
 
-    public void copiar() {
+    public void copiar(String origem, String destino) {
+        destino = destino.replace("\"", "");
 
         try {
             
             PropFile prop = new PropFile();
             String app = prop.readPropertie(EPropertie.APLICATION_NAME);
-            FileUtils.copyFile(new File("atualizacao/software.jar"), new File("queijo/software.jar"));
+            FileUtils.copyFile(new File(origem), new File(destino));
+//            FileUtils.copyFile(new File(prop.readPropertie(EPropertie.LOCAL_ORIGEM) +
+//                                        "/" + app),
+//                    new File(prop.readPropertie(EPropertie.LOCAL_DESTINO) +
+//                                        "/" + app));
         
         } catch (IOException ex) {
             Logger.getLogger(UnzipFiles.class.getName()).log(Level.SEVERE, null, ex);
         }
         
+    }
+    
+    
+    
+    public String createDir(String destDir){
+        File dir = new File(destDir);
+        // create output directory if it doesn't exist
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+        return dir.getAbsolutePath();
     }
 }

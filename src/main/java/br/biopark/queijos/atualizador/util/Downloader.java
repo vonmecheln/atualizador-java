@@ -34,8 +34,8 @@ public class Downloader {
         janela.repaint();
 
         try {
-            String endereco = "https://github.com/renatofritola/Loteria/releases/download/v1.2.0/teste.zip";
-            URL url = new URL(endereco);
+//            String endereco = "https://github.com/renatofritola/Loteria/releases/download/v1.2.0/teste.zip";;;;
+            URL url = new URL(urlBase + "/releases/download/v" + versao + "/" + nomeApp);
             HttpURLConnection httpConnection = (HttpURLConnection) (url.openConnection());
             long completeFileSize = httpConnection.getContentLength();
 
