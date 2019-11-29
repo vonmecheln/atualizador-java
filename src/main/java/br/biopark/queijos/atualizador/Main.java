@@ -163,7 +163,7 @@ public class Main {
                 checarVersao(true);
             }
         });
-
+        
         menu.add(quitItem);
 
         //If the icon is a file
