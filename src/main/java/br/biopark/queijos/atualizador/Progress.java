@@ -245,12 +245,12 @@ public class Progress extends javax.swing.JFrame {
                 prop.readPropertie(EPropertie.LOCAL_DESTINO) + "/bancoqueijos.db");
     }
 
-    public static void updateDatabase() {
+    public static void updateDatabase(int versao) {
         flywayDb.updateDataBase(prop.readPropertie(EPropertie.DATABASE_URL),
                 prop.readPropertie(EPropertie.DATABASE_USER),
                 prop.readPropertie(EPropertie.DATABASE_PASSWORD),
                 prop.readPropertie(EPropertie.DATABASE_SCRIPT_LOCATION),
-                prop.readPropertie(EPropertie.DATABASE_DATASCRIPT_LOCATION));
+                versao == 0);
         util.sleep(2000);
     }
 
@@ -281,7 +281,7 @@ public class Progress extends javax.swing.JFrame {
 
                 updateProgress(0, false, "Atualizando banco de dados...", versaoAtual, "", 500, false);
 
-                updateDatabase();
+                updateDatabase(vAtual);
 
                 updateProgress(0, false, "Instalando nova versão...", versaoAtual, "", 2000, false);
                 unzip.copiar(prop.readPropertie(EPropertie.LOCAL_ORIGEM) + "/" + prop.readPropertie(EPropertie.APLICATION_NAME),

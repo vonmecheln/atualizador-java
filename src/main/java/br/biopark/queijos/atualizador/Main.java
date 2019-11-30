@@ -93,13 +93,18 @@ public class Main {
                 if (menu) {
                     TrayIconController.showVersionFrame(trayIcon, versaoAtual, versoes, novaVersao);
                 } else {
-                    URL url = main.getClass().getResource("/queijo.png");
+                    URL url = main.getClass().getResource("/queijo-alert.png");
                     Image imgQueijo = Toolkit.getDefaultToolkit().getImage(url);
                     main.getTrayIcon().setImage(imgQueijo);
                     main.getTrayIcon().displayMessage("Atualizador Queijos", "Uma nova versão foi encontrada. \nClique aqui para atualizar.", MessageType.INFO);
                     main.getTrayIcon().addActionListener(TrayIconController
                             .showVersao(trayIcon, versaoAtual, versoes, novaVersao));
+                    
                 }
+            }else{
+                URL url = main.getClass().getResource("/queijo.png");
+                Image imgQueijo = Toolkit.getDefaultToolkit().getImage(url);
+                main.getTrayIcon().setImage(imgQueijo);
             }
         }
     }
@@ -176,7 +181,7 @@ public class Main {
         trayIcon.setImageAutoSize(true);
 
         //Set tooltip text for the tray icon
-        trayIcon.setToolTip("Atualizados Queijos");
+        trayIcon.setToolTip("Atualizador Queijos");
         tray.add(trayIcon);
 
         trayIcon.displayMessage("Atualizador Queijos", "Atualizador sendo executado em segundo plano.", MessageType.INFO);
