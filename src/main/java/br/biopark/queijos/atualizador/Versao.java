@@ -5,7 +5,11 @@
  */
 package br.biopark.queijos.atualizador;
 
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.TrayIcon;
+import java.awt.event.ActionListener;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JLabel;
@@ -26,6 +30,9 @@ public class Versao extends javax.swing.JDialog {
     public Versao(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        URL url = this.getClass().getResource("/queijo.png");
+        Image iconeTitulo = Toolkit.getDefaultToolkit().getImage(url);
+        this.setIconImage(iconeTitulo);
     }
 
     public Versao(java.awt.Frame parent, boolean modal, String versao, List<String> versoes, TrayIcon trayicon) {
@@ -36,6 +43,7 @@ public class Versao extends javax.swing.JDialog {
         this.versoes    = versoes;
         
         initComponents();
+        clearTrayIconActions();
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -70,6 +78,7 @@ public class Versao extends javax.swing.JDialog {
         jButton1.setText("Atualizar");
         jButton1.setToolTipText("");
         jButton1.setBorder(null);
+        jButton1.setBorderPainted(false);
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -182,6 +191,12 @@ public class Versao extends javax.swing.JDialog {
 
     public JLabel getjLabel1() {
         return jLabel1;
+    }
+
+    private void clearTrayIconActions() {
+        for(ActionListener al : trayIcon.getActionListeners()) {
+            trayIcon.removeActionListener(al);
+        }
     }
 
     
