@@ -11,18 +11,27 @@ import br.biopark.queijos.atualizador.util.FlywayDatabase;
 import br.biopark.queijos.atualizador.util.PropFile;
 import br.biopark.queijos.atualizador.util.UnzipFiles;
 import br.biopark.queijos.atualizador.util.Util;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
+import java.awt.Toolkit;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JRootPane;
+import javax.swing.plaf.basic.BasicProgressBarUI;
 
 /**
  *
@@ -36,11 +45,13 @@ public class Progress extends javax.swing.JFrame {
     private static Downloader downloader = new Downloader();
     private static String versaoAtual = "";
     private static List<String> versoes = new ArrayList();
-    private static TrayIcon trayIcon;
     private static Progress INSTANCE;
 
     private Progress() {
         initComponents();
+        URL url = this.getClass().getResource("/queijo.png");
+        Image iconeTitulo = Toolkit.getDefaultToolkit().getImage(url);
+        this.setIconImage(iconeTitulo);
     }
 
     public static Progress getInstance() {
@@ -204,6 +215,51 @@ public class Progress extends javax.swing.JFrame {
     private javax.swing.JLabel lbVersaoNova;
     // End of variables declaration//GEN-END:variables
 
+    public static void updateProgress(int val, boolean sp, String st, String verA, String verN, int sleep, boolean indt) {
+        getInstance().getJpProgress().setValue(val);
+        getInstance().getJpProgress().setStringPainted(sp);
+        getInstance().repaint();
+        getInstance().lbStatus.setText(st);
+
+        if (verA != null) {
+            getInstance().lbVersaoNova.setText(verA);
+        }
+
+        if (verN != null) {
+            getInstance().lbVersaoNova.setText(verN);
+        }
+
+        if (indt) {
+            getInstance().getJpProgress().setIndeterminate(indt);
+        }
+
+        getInstance().repaint();
+        util.sleep(sleep);
+    }
+
+    public static void downloadApplication(String v, UnzipFiles unzip) {
+        downloader.download(prop.readPropertie(EPropertie.URL_BASE_GIT), v,
+                prop.readPropertie(EPropertie.ARQUIVO_ZIP));
+        unzip.unzip(prop.readPropertie(EPropertie.ARQUIVO_ZIP),
+                prop.readPropertie(EPropertie.LOCAL_ORIGEM));
+    }
+
+    public static void extractFiles(UnzipFiles unzip) {
+        util.sleep(5000);
+        unzip.createDir(prop.readPropertie(EPropertie.LOCAL_DESTINO));
+        unzip.copiar(prop.readPropertie(EPropertie.LOCAL_ORIGEM) + "/bancoqueijos.db",
+                prop.readPropertie(EPropertie.LOCAL_DESTINO) + "/bancoqueijos.db");
+    }
+
+    public static void updateDatabase(int versao) {
+        flywayDb.updateDataBase(prop.readPropertie(EPropertie.DATABASE_URL),
+                prop.readPropertie(EPropertie.DATABASE_USER),
+                prop.readPropertie(EPropertie.DATABASE_PASSWORD),
+                prop.readPropertie(EPropertie.DATABASE_SCRIPT_LOCATION),
+                versao == 0);
+        util.sleep(2000);
+    }
+
     public static void processar(List<String> versoes, String versaoAtual, TrayIcon trayicon) {
 
         Progress progress = getInstance();
@@ -218,90 +274,42 @@ public class Progress extends javax.swing.JFrame {
             int vRem = Integer.parseInt(v.replace(".", ""));
 
             if (vRem > vAtual) {
-                progress.getJpProgress().setValue(0);
-                progress.getJpProgress().setStringPainted(true);
-                progress.repaint();
-                progress.lbStatus.setText("Iniciando Download da nova versão...");
-                progress.lbVersaoNova.setText(v);
-                progress.repaint();
-                util.sleep(4000);
+                updateProgress(0, true, "Iniciando Download da nova versão...", v, null, 4000, false);
 
-                downloader.download(prop.readPropertie(EPropertie.URL_BASE_GIT), v,
-                        prop.readPropertie(EPropertie.ARQUIVO_ZIP));
-                unzip.unzip(prop.readPropertie(EPropertie.ARQUIVO_ZIP),
-                        prop.readPropertie(EPropertie.LOCAL_ORIGEM));
+                downloadApplication(v, unzip);
                 versaoAtual = v;
 
-                progress.getJpProgress().setValue(0);
-                progress.getJpProgress().setStringPainted(false);
-                progress.lbStatus.setText("Extraindo arquivos...");
-                progress.repaint();
-                progress.getJpProgress().setIndeterminate(true);
-                progress.repaint();
+                updateProgress(0, false, "Extraindo arquivos...", null, null, 0, true);
 
                 if (vRem == 100) {
-
-                    util.sleep(5000);
-
-                    unzip.createDir(prop.readPropertie(EPropertie.LOCAL_DESTINO));
-
-                    unzip.copiar(prop.readPropertie(EPropertie.LOCAL_ORIGEM) + "/bancoqueijos.db",
-                            prop.readPropertie(EPropertie.LOCAL_DESTINO) + "/bancoqueijos.db");
-
+                    extractFiles(unzip);
                 }
 
-                progress.lbStatus.setText("Atualizando banco de dados...");
-                progress.lbVersao.setText(versaoAtual);
-                progress.lbVersaoNova.setText("");
-                progress.repaint();
-                util.sleep(500);
+                updateProgress(0, false, "Atualizando banco de dados...", versaoAtual, "", 500, false);
 
-                flywayDb.updateDataBase(prop.readPropertie(EPropertie.DATABASE_URL),
-                        prop.readPropertie(EPropertie.DATABASE_USER),
-                        prop.readPropertie(EPropertie.DATABASE_PASSWORD),
-                        prop.readPropertie(EPropertie.DATABASE_SCRIPT_LOCATION),
-                        prop.readPropertie(EPropertie.DATABASE_DATASCRIPT_LOCATION));
-                util.sleep(2000);
+                updateDatabase(vAtual);
 
-                progress.lbStatus.setText("Instalando nova versão...");
-                progress.lbVersao.setText(versaoAtual);
-                progress.lbVersaoNova.setText("");
-                progress.repaint();
+                updateProgress(0, false, "Instalando nova versão...", versaoAtual, "", 2000, false);
                 unzip.copiar(prop.readPropertie(EPropertie.LOCAL_ORIGEM) + "/" + prop.readPropertie(EPropertie.APLICATION_NAME),
                         prop.readPropertie(EPropertie.LOCAL_DESTINO) + "/" + prop.readPropertie(EPropertie.APLICATION_NAME));
 
-                util.sleep(2000);
-
                 prop.setProperty(EPropertie.APLICATION_VERSION, versaoAtual);
 
-                progress.lbStatus.setText("Removendo arquivos temporários...");
-                progress.lbVersao.setText(versaoAtual);
-                progress.lbVersaoNova.setText("");
-                progress.repaint();
-                util.sleep(2000);
+                updateProgress(0, false, "Removendo arquivos temporários...", versaoAtual, "", 2000, false);
 
                 unzip.deleteDownloadedContent(prop.readPropertie(EPropertie.ARQUIVO_ZIP),
                         prop.readPropertie(EPropertie.LOCAL_ORIGEM));
 
-                progress.lbStatus.setText("Versão " + versaoAtual + " atualziada com sucesso!");
-                progress.lbVersao.setText(versaoAtual);
-                progress.lbVersaoNova.setText("");
-                progress.repaint();
-                util.sleep(2000);
-
+                updateProgress(0, false, "Versão " + versaoAtual + " atualizada com sucesso!", versaoAtual, "", 2000, false);
             }
             sucesso = true;
         }
 
         if (sucesso) {
-            progress.lbStatus.setText("Processo de atualização finalizado!");
-            progress.lbVersao.setText(versaoAtual);
-            progress.lbVersaoNova.setText("");
-            progress.repaint();
-            util.sleep(2000);
+            updateProgress(0, false, "Processo de atualização finalizado!", versaoAtual, "", 2000, false);
 
             progress.dispose();
-            abrirAplicacao();
+            abrirAplicacao(trayicon);
         }
 
     }
@@ -349,15 +357,14 @@ public class Progress extends javax.swing.JFrame {
 
     }
 
-    public static void abrirAplicacao() {
-
+    public static void abrirAplicacao(TrayIcon trayIcon) {
         trayIcon.displayMessage("Atualizador Queijos", "Clique aqui para abrir o sistema", TrayIcon.MessageType.INFO);
         trayIcon.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 Runtime runTime = Runtime.getRuntime();
                 try {
                     Process process = runTime.exec("java -jar "
-                            + prop.readPropertie(EPropertie.LOCAL_DESTINO)
+                            + prop.readPropertie(EPropertie.LOCAL_DESTINO).replace("\\", "/")
                             + "/" + prop.readPropertie(EPropertie.APLICATION_NAME));
                 } catch (IOException ex) {
                     Logger.getLogger(Progress.class.getName()).log(Level.SEVERE, null, ex);
@@ -379,16 +386,12 @@ public class Progress extends javax.swing.JFrame {
         Progress.versoes = versoes;
     }
 
-    public void setTrayIcon(TrayIcon trayIcon) {
-        this.trayIcon = trayIcon;
-    }
-
     public void iniciarAtualizacao(List<String> versoes, String versaoAtual, TrayIcon trayicon) {
 
         Progress janela = Progress.getInstance();
 
         janela.getJpProgress().setIndeterminate(true);
-        janela.getJpProgress().setUI(new Main.MyProgressUI());
+        janela.getJpProgress().setUI(new MyProgressUI());
         janela.getLbVersao().setText(versaoAtual);
 
         janela.getJpProgress().setVisible(true);
@@ -396,8 +399,28 @@ public class Progress extends javax.swing.JFrame {
 
         janela.repaint();
 
-        janela.processar(versoes, versaoAtual, trayIcon);
+        janela.processar(versoes, versaoAtual, trayicon);
+        TrayIconController.processandoVersao = false;
+    }
+    
+    static class MyProgressUI extends BasicProgressBarUI {
 
+        Rectangle r;
+
+        @Override
+        protected void paintIndeterminate(Graphics g, JComponent c) {
+            Graphics2D g2d = (Graphics2D) g;
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                    RenderingHints.VALUE_ANTIALIAS_ON);
+
+            if (r == null) {
+                r = new Rectangle();
+            }
+
+            r = getBox(r);
+            g.setColor(progressBar.getForeground());
+            g.fillRect(r.x, r.y, r.width, r.height);
+        }
     }
 
 }

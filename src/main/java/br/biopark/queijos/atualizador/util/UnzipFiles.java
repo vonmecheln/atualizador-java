@@ -83,6 +83,7 @@ public class UnzipFiles {
     }
 
     public void copiar(String origem, String destino) {
+        destino = destino.replace("\"", "");
 
         try {
             

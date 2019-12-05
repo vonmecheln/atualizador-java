@@ -14,6 +14,7 @@ import java.util.stream.Stream;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.MigrationInfo;
 import org.flywaydb.core.api.MigrationInfoService;
+import org.flywaydb.core.api.configuration.FluentConfiguration;
 
 /**
  *
@@ -21,28 +22,29 @@ import org.flywaydb.core.api.MigrationInfoService;
  */
 public class FlywayDatabase {
 
-    public void updateDataBase(String dbUrl, String user, String paswd, String sqlScriptLocations, String pathData) {
+    public void updateDataBase(String dbUrl, String user, String paswd, String sqlScriptLocations, boolean firstVersion) {
 
-        Flyway flyway = Flyway.configure()
-                .dataSource(dbUrl, user, paswd)
-                .locations(sqlScriptLocations)
-                .baselineOnMigrate(true)
-                .load();
+        FluentConfiguration config = Flyway.configure();
+
+        config.dataSource(dbUrl, user, paswd);
+        if (firstVersion) {
+            File tmpDir = new File(sqlScriptLocations.replace("filesystem:", "") + "/V1.0.0__Script_Inicial.sql");
+
+            if (tmpDir.exists()) {
+
+                String sql = readLineByLineJava8(tmpDir.getPath());
+                config.initSql(sql);
+                config.baselineOnMigrate(true);
+            }
+
+        } else {
+            config.locations(sqlScriptLocations);
+        }
+
+        Flyway flyway = config.load();
 
         flyway.migrate();
-        
-        File tmpDir = new File(pathData);
-        
-        if (tmpDir.exists()){
-            
-            flyway = Flyway.configure()
-                .dataSource(dbUrl, user, paswd)
-                .initSql(readLineByLineJava8(pathData))
-                .load();
-            
-            flyway.migrate();
-        }
-        
+
         /**
          * Find which versions are not applied yet.
          */
@@ -54,7 +56,6 @@ public class FlywayDatabase {
             String state = mi.getState().isApplied() + "";
             System.out.println(String.format("Is target version %s applied? %s", version, state));
         }
-
 //        progress.lbStatus.setText("Versão de banco aplicada: "+migrationInfo[migrationInfo.length-1].getVersion().toString());
 //        progress.repaint();
 //        sleep(2000);
