@@ -11,7 +11,6 @@
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
     
-    
     <dependencies>
         <dependency>
             <groupId>it.sauronsoftware.cron4j</groupId>
@@ -51,7 +50,7 @@
     
     <build>
         <plugins>
-            <plugin>
+<!--            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.0.2</version>
@@ -62,7 +61,48 @@
                         </manifest>
                     </archive>
                 </configuration>
-            </plugin>
+            </plugin>-->
+            
+            <plugin>
+          <groupId>com.akathist.maven.plugins.launch4j</groupId>
+          <artifactId>launch4j-maven-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>l4j-clui</id>
+              <phase>package</phase>
+              <goals><goal>launch4j</goal></goals>
+              <configuration>
+                <headerType>console</headerType>
+                <outfile>target/queijo_desktop.exe</outfile>
+                <jar>target/${project.artifactId}-${project.version}.jar</jar>
+                <errTitle>Queijos Biopark</errTitle>
+                <classPath>
+                  <mainClass>${project.groupId}.${project.artifactId}.Main</mainClass>
+                  <addDependencies>true</addDependencies>
+                  <preCp>anything</preCp>
+                </classPath>
+                <jre>
+                  <minVersion>1.8.0</minVersion>
+                  <opts>
+                    <opt>-Djava.endorsed.dirs=./endorsed</opt>
+                  </opts>
+                </jre>
+                <versionInfo>
+                  <fileVersion>1.2.3.4</fileVersion>
+                  <txtFileVersion>txt file version?</txtFileVersion>
+                  <fileDescription>a description</fileDescription>
+                  <copyright>my copyright</copyright>
+                  <productVersion>4.3.2.1</productVersion>
+                  <txtProductVersion>txt product version</txtProductVersion>
+                  <productName>E-N-C-C</productName>
+                  <internalName>ccne</internalName>
+                  <originalFilename>original.exe</originalFilename>
+                </versionInfo>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin> 
+        
         </plugins>
         <resources>
             <resource>
