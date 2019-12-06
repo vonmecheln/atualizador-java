@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.biopark.queijos.atualizador.util;
+package br.com.ifprbiopark.atualizador_queijo_desktop.util;
 
-import br.biopark.queijos.atualizador.enumerator.EPropertie;
+import br.com.ifprbiopark.atualizador_queijo_desktop.enumerator.EPropertie;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;

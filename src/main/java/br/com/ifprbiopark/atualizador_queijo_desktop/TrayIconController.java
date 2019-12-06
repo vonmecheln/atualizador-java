@@ -1,4 +1,4 @@
-package br.biopark.queijos.atualizador;
+package br.com.ifprbiopark.atualizador_queijo_desktop;
 
 import java.awt.AWTException;
 import java.awt.Image;

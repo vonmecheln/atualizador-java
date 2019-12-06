@@ -3,14 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.biopark.queijos.atualizador;
+package br.com.ifprbiopark.atualizador_queijo_desktop;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import br.biopark.queijos.atualizador.util.PropFile;
-import br.biopark.queijos.atualizador.util.Util;
-import br.biopark.queijos.atualizador.enumerator.EPropertie;
-import br.biopark.queijos.atualizador.util.GitUtil;
+import br.com.ifprbiopark.atualizador_queijo_desktop.util.PropFile;
+import br.com.ifprbiopark.atualizador_queijo_desktop.util.Util;
+import br.com.ifprbiopark.atualizador_queijo_desktop.enumerator.EPropertie;
+import br.com.ifprbiopark.atualizador_queijo_desktop.util.GitUtil;
 import java.awt.AWTException;
 import java.awt.Color;
 import java.awt.Graphics;
